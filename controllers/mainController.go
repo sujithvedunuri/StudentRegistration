@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"example/sujith/beans"
-	"log"
+
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-var students []beans.Student = []beans.Student{
+var Students []beans.Student = []beans.Student{
 
 	{
 		ID:        1,
@@ -42,13 +42,13 @@ var students []beans.Student = []beans.Student{
 
 func GetStudents(c *gin.Context) {
 	c.IndentedJSON(
-		http.StatusOK, students)
+		http.StatusOK, Students)
 
 }
 
 func GetStudentById(c *gin.Context) {
 	id := c.Param("id")
-	for _, i := range students {
+	for _, i := range Students {
 		if strconv.Itoa(i.ID) == id {
 			c.IndentedJSON(http.StatusOK, i)
 			return
@@ -57,17 +57,4 @@ func GetStudentById(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{
 		"message": "student not found",
 	})
-}
-func AddNewStudent(c *gin.Context) {
-
-	var newStudent beans.Student
-
-	if err := c.BindJSON(&newStudent); err != nil {
-		log.Fatal("new student added succesfully")
-		return
-
-	}
-	students = append(students, newStudent)
-	c.IndentedJSON(http.StatusCreated, newStudent)
-
 }
