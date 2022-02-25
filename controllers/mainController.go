@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"example/sujith/beans"
+	"fmt"
 
 	"net/http"
 	"strconv"
@@ -11,36 +12,47 @@ import (
 
 var Students []beans.Student = []beans.Student{
 
-	{
-		ID:        1,
-		FirstName: "sujith",
-		LastName:  "vedunuri",
-		DOB:       "10062001",
-		Gender:    "male",
-		City:      "hyderabad",
-		State:     "Telangana",
-	},
-	{
-		ID:        2,
-		FirstName: "Ricky", LastName: "temp", DOB: "10062001",
-		Gender: "male",
-		City:   "hyderabad",
-		State:  "Telangana"},
-	{
-		ID:        3,
-		FirstName: "Adam", LastName: "temp", DOB: "10062001",
-		Gender: "male",
-		City:   "hyderabad",
-		State:  "Telangana"},
-	{
-		ID:        4,
-		FirstName: "Justin", LastName: "temp", DOB: "10062001",
-		Gender: "male",
-		City:   "hyderabad",
-		State:  "Telangana"},
+	// {
+	// 	ID:        1,
+	// 	FirstName: "sujith",
+	// 	LastName:  "vedunuri",
+	// 	DOB:       "10062001",
+	// 	Gender:    "male",
+	// 	City:      "hyderabad",
+	// 	State:     "Telangana",
+	// },
+	// {
+	// 	ID:        2,
+	// 	FirstName: "Ricky", LastName: "temp", DOB: "10062001",
+	// 	Gender: "male",
+	// 	City:   "hyderabad",
+	// 	State:  "Telangana"},
+	// {
+	// 	ID:        3,
+	// 	FirstName: "Adam", LastName: "temp", DOB: "10062001",
+	// 	Gender: "male",
+	// 	City:   "hyderabad",
+	// 	State:  "Telangana"},
+	// {
+	// 	ID:        4,
+	// 	FirstName: "Justin", LastName: "temp", DOB: "10062001",
+	// 	Gender: "male",
+	// 	City:   "hyderabad",
+	// 	State:  "Telangana"},
 }
 
 func GetStudents(c *gin.Context) {
+	var studes beans.Student
+
+	fmt.Println("printfing body", c.Request.Body)
+
+	if err := c.ShouldBindJSON(&studes); err == nil {
+		fmt.Println("list", studes)
+	} else {
+		fmt.Println("error", err)
+	}
+
+	// Students tudes
 	c.IndentedJSON(
 		http.StatusOK, Students)
 

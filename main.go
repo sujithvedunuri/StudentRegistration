@@ -30,35 +30,18 @@ func main() {
 	dsn := "root:password@tcp(127.0.0.1:3306)/FirstProject?charset=utf8mb4&parseTime=True&loc=Local"
 	Db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	Db.AutoMigrate(beans.Student{})
-	// db, err = gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/FirstProject?charset=utf8&parseTime=True")
 	if err != nil {
 		log.Println("Connection Failed to Open")
 	} else {
 		log.Println("Connection Established", Db)
 	}
 
-	// log.Fatal(result)
-
-	// for _, user := range users {
-	// 	db.Create(&user)
-	// }
-	// fmt.Printf("hello")
 	r := gin.Default()
 	r.GET("/", controllers.GetStudents)
 	r.POST("/register", func(c *gin.Context) {
 
-		// var newStudent = beans.Student{
-		// FirstName: "supriya",
-		// LastName:  "vedunuri",
-		// DOB:       "03111996",
-		// Gender:    "Female",
-		// City:      "hyderabad",
-		// State:     "telangana",
-		// }
-
-		fmt.Printf("check before")
+		// fmt.Printf("check before")
 		var newStudent beans.Student
-		// log.Fatal(&newStudent)
 
 		if err := c.ShouldBindJSON(&newStudent); err == nil {
 			fmt.Printf("obj", newStudent)
