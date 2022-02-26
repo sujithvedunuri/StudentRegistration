@@ -3,12 +3,9 @@ package main
 import (
 	"example/sujith/beans"
 	"example/sujith/controllers"
-	"fmt"
-	"log"
-	"net/http"
+	"example/sujith/dbconnection"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -24,36 +21,13 @@ var stud = beans.Student{
 	// RejectedAt: time.Now(),
 }
 var Db *gorm.DB
-var err error
 
 func main() {
-	dsn := "root:password@tcp(127.0.0.1:3306)/FirstProject?charset=utf8mb4&parseTime=True&loc=Local"
-	Db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	Db.AutoMigrate(beans.Student{})
-	if err != nil {
-		log.Println("Connection Failed to Open")
-	} else {
-		log.Println("Connection Established", Db)
-	}
 
 	r := gin.Default()
+	dbconnection.Dbconnector()
 	r.GET("/", controllers.GetStudents)
-	r.POST("/register", func(c *gin.Context) {
-
-		// fmt.Printf("check before")
-		var newStudent beans.Student
-
-		if err := c.ShouldBindJSON(&newStudent); err == nil {
-			fmt.Printf("obj", newStudent)
-		} else {
-			fmt.Printf("error here", err)
-		}
-		fmt.Print(newStudent, "sujith")
-		Db.Create(&newStudent)
-		controllers.Students = append(controllers.Students, newStudent)
-		c.IndentedJSON(http.StatusCreated, newStudent)
-	})
-
+	r.POST("/register", controllers.RegisterStudents)
 	r.GET("/:id", controllers.GetStudentById)
 	r.Run()
 }

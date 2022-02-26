@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"example/sujith/beans"
+	"example/sujith/dbconnection"
 	"fmt"
 
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -41,32 +41,49 @@ var Students []beans.Student = []beans.Student{
 	// 	State:  "Telangana"},
 }
 
-func GetStudents(c *gin.Context) {
-	var studes beans.Student
+func RegisterStudents(c *gin.Context) {
 
-	fmt.Println("printfing body", c.Request.Body)
+	// fmt.Printf("check before")
+	var newStudent beans.Student
 
-	if err := c.ShouldBindJSON(&studes); err == nil {
-		fmt.Println("list", studes)
+	if err := c.ShouldBindJSON(&newStudent); err == nil {
+		fmt.Printf("obj", newStudent)
 	} else {
-		fmt.Println("error", err)
+		fmt.Printf("error here", err)
 	}
+	fmt.Print(newStudent, "sujith")
+	dbconnection.Db.Create(&newStudent)
+	Students = append(Students, newStudent)
+	c.IndentedJSON(http.StatusCreated, newStudent)
+}
+
+func GetStudents(c *gin.Context) {
+	// var studes []beans.Student
+	var studata []beans.Student
+	dbconnection.Db.Find(&studata)
+	fmt.Println(studata)
+
+	// fmt.Println("printfing body", c.Request.Body)
+	// fmt.Println("dujith", c.Request.Response)
+
+	// if err := c.ShouldBindJSON(&studes); err == nil {
+	// 	fmt.Println("list", studes)
+	// } else {
+	// 	fmt.Println("error", err)
+	// }
 
 	// Students tudes
 	c.IndentedJSON(
-		http.StatusOK, Students)
+		http.StatusOK, studata)
 
 }
 
 func GetStudentById(c *gin.Context) {
-	id := c.Param("id")
-	for _, i := range Students {
-		if strconv.Itoa(i.ID) == id {
-			c.IndentedJSON(http.StatusOK, i)
-			return
-		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{
-		"message": "student not found",
-	})
+	var id = c.Param("id")
+	var query []beans.Student
+	dbconnection.Db.Where("id", id).Find(&query)
+	fmt.Println("the searched query is: ", query)
+
+	c.IndentedJSON(
+		http.StatusOK, query)
 }
